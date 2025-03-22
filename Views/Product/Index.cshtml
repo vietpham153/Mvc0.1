@@ -1,0 +1,12 @@
+﻿@model List<ProductModel>
+
+<h1>Thong tin cac san pham</h1>
+
+<ul class="list-group">
+	@foreach (var product in Model)
+	{
+		<li class="list-group-item list-group-item-action">
+			@product.Name - @product.Price
+		</li>
+	};
+</ul>

@@ -1,4 +1,7 @@
-namespace Mvc0._1
+using App.ExtendMethods;
+using App.Services;
+
+namespace App
 {
     public class Program
     {
@@ -8,9 +11,20 @@ namespace Mvc0._1
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddRazorPages();
+            builder.Services.AddSingleton<PlanetService>();
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //{
+            //    var connectString = builder.Services.GetConnectionString("DbConnect");
+            //    options.UseSqlServer(connectString);
+            //});
+            builder.Services.Configure<RouteOptions>(routes =>
+            {
+                routes.LowercaseUrls = true;
+            });
+            builder.Services.AddSingleton<ProductService>();
             var app = builder.Build();
-
+            var env = app.Services.GetRequiredService<IWebHostEnvironment>();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -22,8 +36,11 @@ namespace Mvc0._1
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.AddStatusCodePage(); // loi 400 - 599 da duoc extend method
+
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

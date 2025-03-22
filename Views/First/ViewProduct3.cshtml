@@ -1,0 +1,12 @@
+﻿@page
+@{
+	var product = ViewBag.product as ProductModel;
+}
+<div class="card bg-danger text-white">
+	<h1 class="card-header">@product.Name</h1>
+	<div class="card-body">
+		<p class="card-text">
+			Gia: @product.Price
+		</p>
+	</div>
+</div>

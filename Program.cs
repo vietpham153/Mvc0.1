@@ -1,5 +1,7 @@
 using App.ExtendMethods;
+using App.Models;
 using App.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace App
 {
@@ -13,11 +15,11 @@ namespace App
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.AddSingleton<PlanetService>();
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //{
-            //    var connectString = builder.Services.GetConnectionString("DbConnect");
-            //    options.UseSqlServer(connectString);
-            //});
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                string connect = builder.Configuration.GetConnectionString("DbConnect");
+                options.UseSqlServer(connect);
+            });
             builder.Services.Configure<RouteOptions>(routes =>
             {
                 routes.LowercaseUrls = true;
@@ -46,7 +48,10 @@ namespace App
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            app.MapControllerRoute(
+            name: "areas",
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+          );
             app.Run();
         }
     }

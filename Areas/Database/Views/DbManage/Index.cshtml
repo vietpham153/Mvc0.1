@@ -1,0 +1,56 @@
+﻿@using Microsoft.EntityFrameworkCore
+@inject App.Models.AppDbContext dbContext
+@{
+	ViewData["title"] = "Thong tin Db";
+	var connect = dbContext.Database.GetDbConnection();
+	var dbName = connect.Database;
+	var canConnect = dbContext.Database.CanConnect();
+
+	// dbContext.Database.GetPendingMigrations(); lay cac migrations dang pending
+	// dbContext.Database.GetAppliedMigrations(); lay cac migrations da duoc cap nhat
+}
+
+	<partial name="_AlertMessage"></partial>
+
+<h1>Thong tin ve co so du lieu</h1>
+<h2>Thong tin</h2>
+<p>- Database Name: @dbName</p>
+<p>- Source: @connect.DataSource</p>
+<p>- State: @connect.State</p>
+<hr />
+<h2>
+	@foreach (var item in dbContext.Database.GetAppliedMigrations())
+	{
+		<p>@item</p>
+	}
+	@foreach (var item in dbContext.Database.GetPendingMigrations())
+	{
+		<p>@item (pending)</p>
+	}
+</h2>
+
+@if (dbContext.Database.GetPendingMigrations().Any())
+{
+	<form method="post">
+		<button type="submit" asp-action="UpdateDb" class="btn btn-success" asp-controller="DbManage">Cap nhat database</button>
+	</form>
+}
+
+@if (!canConnect)
+{
+	<p class="alert alert-danger">Khong ket noi duoc voi database</p>
+}
+
+@if(canConnect)
+{
+	<h2>Cac table</h2>
+	await dbContext.Database.OpenConnectionAsync();
+	var table = dbContext.Database.GetDbConnection().GetSchema("Tables");
+	<ul>
+		@foreach(System.Data.DataRow item in table.Rows)
+		{
+			<li>@item["TABLE_NAME"]</li>
+		}
+	</ul>
+	<a class="btn btn-danger" asp-action="DeleteDb" asp-controller="DbManage">Xoa database</a>
+}

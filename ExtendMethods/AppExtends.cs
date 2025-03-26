@@ -20,7 +20,7 @@ namespace App.ExtendMethods
                             </head>
                             <body>
                                 <p style='color:red; font-size:30px '>
-                                    Co loi xay ra{code} - {(HttpStatusCode)code}
+                                    Co loi xay ra {code} - {(HttpStatusCode)code}
                                 </p>
                             </body>
                                 </html>";

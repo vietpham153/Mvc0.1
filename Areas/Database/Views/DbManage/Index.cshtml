@@ -52,5 +52,6 @@
 			<li>@item["TABLE_NAME"]</li>
 		}
 	</ul>
-	<a class="btn btn-danger" asp-action="DeleteDb" asp-controller="DbManage">Xoa database</a>
+	<a class="btn btn-danger" asp-action="DeleteDb" asp-controller="DbManage">Xoa database: @dbName</a>
+	<a class="btn btn-success" asp-action="SeedData" asp-controller="DbManage">Seed data</a>
 }

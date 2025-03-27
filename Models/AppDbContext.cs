@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using App.Models.Blog;
 
 namespace App.Models
 {
     public class AppDbContext : IdentityDbContext<AppUser>
     {
         public DbSet<ContactModel> Contacts { get; set; }
+        public DbSet<Category> Categories { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             
@@ -25,6 +27,11 @@ namespace App.Models
                     entityType.SetTableName(tableName.Substring(6));
                 }
             }
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasIndex(c => c.Slug).IsUnique();
+
+            });
         }
     }
 }

@@ -122,8 +122,15 @@ namespace App.Areas.Blog.Controllers
                 Console.WriteLine($"Entity State: {_context.Entry(category).State}");
                 _context.Add(category);
                 Console.WriteLine("Đang thêm category...");
-                var changes = await _context.SaveChangesAsync();
-                Console.WriteLine($"Số bản ghi thay đổi: {changes}");
+                try
+                {
+                    var changes = await _context.SaveChangesAsync();
+                    Console.WriteLine($"Số bản ghi thay đổi: {changes}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Lỗi khi lưu vào database: {ex.Message}");
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -203,11 +210,48 @@ namespace App.Areas.Blog.Controllers
             {
                 return NotFound();
             }
+
+            bool canUpdate = true;
+
+
             if(category.ParentId == category.Id)
             {
                 ModelState.AddModelError(string.Empty, "Phai chon danh muc cha khac");
+                canUpdate = false;
             }
-            if (ModelState.IsValid && category.ParentId != category.Id)
+
+            //Check muc cha phu hop:
+            if(canUpdate && category.ParentId!= null)
+            {
+                var childCates = (from c in _context.Categories select c)
+                    .Include(c => c.CategoryChildren)
+                    .Where(c => c.ParentId == category.Id);
+
+                //Func check ID:
+                Func<List<Category>, bool> checkId = null;
+                checkId = (cates) =>
+                {
+                    foreach (var cate in cates)
+                    {
+                        Console.WriteLine(cate.Title);
+                        if (cate.Id == category.ParentId)
+                        {
+                            canUpdate = false;
+                            ModelState.AddModelError(string.Empty, "Không thể chọn danh mục con làm cha");
+                            return true;
+                        }
+                        if(cate.CategoryChildren != null)
+                        {
+                            return checkId(cate.CategoryChildren.ToList());
+                        }
+                    }
+                    return false;
+                };
+                //End Func
+                checkId(childCates.ToList());
+            }
+
+            if (ModelState.IsValid && canUpdate)
             {
                 try
                 {

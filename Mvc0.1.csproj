@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.6.2" />
     <PackageReference Include="MailKit" Version="4.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
@@ -48,7 +49,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Blog\Models\" />
-    <Folder Include="Areas\Blog\Data\" />
     <Folder Include="Areas\Blog\Views\Category\" />
     <Folder Include="Areas\Contact\Data\" />
     <Folder Include="Areas\Contact\Models\" />
